@@ -13,12 +13,12 @@ const QUESTIONS = [
   '¿Qué es un plan PMI monotributo?',
   '¿Qué es un plan PMI 2886?',
   '¿Cómo se genera una baja (hijo PMI)?',
-  '¿Cómo se genera un alta (PMI)?',
+  '¿Cómo se genera un alta (PMI) socio nuevo?',
   'Mostrá en pantalla cómo actualizás los datos.',
   '¿Un plan PMI 2886 puede bajar a PMO?',
   'Nombrá línea de planes Jerárquicos.',
   '¿A quiénes va dirigido el PLAN JOVEN?',
-  'Socio monotributista: ¿qué documentación deberá cargar?',
+  'Socio monotributista: ¿qué documentación deberá cargar para ingresar?',
   '¿Qué planes sí tienen carencias?',
   'Nombrá 2 servicios y detallá.',
   '¿Qué es el fondo Jubilados?',
@@ -26,7 +26,11 @@ const QUESTIONS = [
   '¿Qué es el servicio de interconsulta?',
   '¿Un RN tiene cobertura?',
   '¿Un socio con deuda en PMO puede solicitar volver a PMI?',
-  'Explicá con tus palabras la situación de hijo mayor de 21 años.'
+  'Explicá con tus palabras la situación de hijo mayor de 21 años.',
+  '¿Cual es el porcentaje que recepcionamos de aporte en asalariados?',
+  'Explica los porcentajes de cobertura de Prótesis Odontologica según plan.',
+  'Llama Persona de 55 años que le ofrecemos.',
+  '¿Que beneficios tengo abonando la cuota societaria?'
 ];
 
 export const TrainingApp = () => {
