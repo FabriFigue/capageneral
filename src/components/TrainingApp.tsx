@@ -57,11 +57,6 @@ export const TrainingApp = () => {
       setUsedParticipants(prev => [...prev, participant]);
       setUsedQuestions(prev => [...prev, question]);
       setShowResult(true);
-
-      // Check if all participants have been used
-      if (usedParticipants.length + 1 >= PARTICIPANTS.length) {
-        setIsComplete(true);
-      }
     }
   };
 
@@ -73,6 +68,10 @@ export const TrainingApp = () => {
       setShowResult(true);
       setCurrentParticipant('');
     }
+  };
+
+  const handleComplete = () => {
+    setIsComplete(true);
   };
 
   const handleReset = () => {
@@ -224,17 +223,27 @@ export const TrainingApp = () => {
               >
                 ¡Vamos!
               </Button>
-              {remainingParticipants === 8 && (
-                <Button
-                  onClick={handleShowQuestion}
-                  disabled={remainingQuestions === 0}
-                  size="lg"
-                  variant="outline"
-                  className="border-institutional-accent text-institutional-accent hover:bg-institutional-accent hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-                >
-                  <MessageCircleQuestion className="w-5 h-5 mr-2" />
-                  Solo Pregunta
-                </Button>
+              {remainingParticipants === 0 && (
+                <>
+                  <Button
+                    onClick={handleShowQuestion}
+                    disabled={remainingQuestions === 0}
+                    size="lg"
+                    variant="outline"
+                    className="border-institutional-accent text-institutional-accent hover:bg-institutional-accent hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+                  >
+                    <MessageCircleQuestion className="w-5 h-5 mr-2" />
+                    Solo Pregunta
+                  </Button>
+                  <Button
+                    onClick={handleComplete}
+                    size="lg"
+                    className="bg-gradient-to-r from-success to-success/80 hover:from-success hover:to-success text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+                  >
+                    <Users className="w-5 h-5 mr-2" />
+                    Finalizar
+                  </Button>
+                </>
               )}
             </>
           ) : (
