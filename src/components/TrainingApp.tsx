@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { RotateCcw, Users, MessageCircleQuestion } from 'lucide-react';
 
 const PARTICIPANTS = [
-  'Abril', 'Agustina', 'Fabricio', 'Flavia', 'Gonzalo', 'Belén', 'Julieta'
+  'Abril', 'Agustina', 'Fabricio', 'Flavia', 'Gonzalo', 'Belén', 'Julieta', 'Nicolas'
 ];
 
 const QUESTIONS = [
@@ -89,7 +89,7 @@ export const TrainingApp = () => {
             Campaña General - Jerárquicos Salud
           </p>
           <p className="text-sm text-muted-foreground">
-            Equipo: Abril, Agustina, Fabricio, Flavia, Gonzalo, Belén y Julieta
+            Equipo: Abril, Agustina, Fabricio, Flavia, Gonzalo, Belén, Julieta y Nicolas
           </p>
         </div>
 
