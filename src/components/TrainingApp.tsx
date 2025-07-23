@@ -65,6 +65,16 @@ export const TrainingApp = () => {
     }
   };
 
+  const handleShowQuestion = () => {
+    const question = getRandomUnused(QUESTIONS, usedQuestions);
+    if (question) {
+      setCurrentQuestion(question);
+      setUsedQuestions(prev => [...prev, question]);
+      setShowResult(true);
+      setCurrentParticipant('');
+    }
+  };
+
   const handleReset = () => {
     setUsedParticipants([]);
     setUsedQuestions([]);
@@ -144,22 +154,33 @@ export const TrainingApp = () => {
               <div className="space-y-6 animate-slide-up">
                 {!isComplete ? (
                   <>
-                    <Badge 
-                      variant="secondary" 
-                      className="bg-institutional-blue text-white px-4 py-2 text-lg"
-                    >
-                      Turno {usedParticipants.length} de {PARTICIPANTS.length}
-                    </Badge>
+                    {currentParticipant ? (
+                      <Badge 
+                        variant="secondary" 
+                        className="bg-institutional-blue text-white px-4 py-2 text-lg"
+                      >
+                        Turno {usedParticipants.length} de {PARTICIPANTS.length}
+                      </Badge>
+                    ) : (
+                      <Badge 
+                        variant="secondary" 
+                        className="bg-institutional-accent text-white px-4 py-2 text-lg"
+                      >
+                        Solo Pregunta
+                      </Badge>
+                    )}
                     
                     <div className="space-y-4">
-                      <div>
-                        <h3 className="text-lg text-muted-foreground mb-2">Participante seleccionado:</h3>
-                        <p className="text-4xl font-bold text-institutional-blue animate-fade-in">
-                          {currentParticipant}
-                        </p>
-                      </div>
+                      {currentParticipant && (
+                        <div>
+                          <h3 className="text-lg text-muted-foreground mb-2">Participante seleccionado:</h3>
+                          <p className="text-4xl font-bold text-institutional-blue animate-fade-in">
+                            {currentParticipant}
+                          </p>
+                        </div>
+                      )}
                       
-                      <div className="border-t pt-4">
+                      <div className={currentParticipant ? "border-t pt-4" : ""}>
                         <h3 className="text-lg text-muted-foreground mb-2">Pregunta:</h3>
                         <p className="text-xl text-foreground font-medium leading-relaxed animate-fade-in">
                           {currentQuestion}
@@ -193,25 +214,50 @@ export const TrainingApp = () => {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {!isComplete ? (
-            <Button
-              onClick={handleStart}
-              disabled={remainingParticipants === 0}
-              size="lg"
-              className="bg-gradient-to-r from-institutional-blue to-institutional-blue-light hover:from-institutional-blue-dark hover:to-institutional-blue text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-              style={{ boxShadow: 'var(--shadow-institutional)' }}
-            >
-              ¡Vamos!
-            </Button>
+            <>
+              <Button
+                onClick={handleStart}
+                disabled={remainingParticipants === 0}
+                size="lg"
+                className="bg-gradient-to-r from-institutional-blue to-institutional-blue-light hover:from-institutional-blue-dark hover:to-institutional-blue text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+                style={{ boxShadow: 'var(--shadow-institutional)' }}
+              >
+                ¡Vamos!
+              </Button>
+              {remainingParticipants === 8 && (
+                <Button
+                  onClick={handleShowQuestion}
+                  disabled={remainingQuestions === 0}
+                  size="lg"
+                  variant="outline"
+                  className="border-institutional-accent text-institutional-accent hover:bg-institutional-accent hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+                >
+                  <MessageCircleQuestion className="w-5 h-5 mr-2" />
+                  Solo Pregunta
+                </Button>
+              )}
+            </>
           ) : (
-            <Button
-              onClick={handleReset}
-              size="lg"
-              variant="outline"
-              className="border-institutional-blue text-institutional-blue hover:bg-institutional-blue hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-            >
-              <RotateCcw className="w-5 h-5 mr-2" />
-              Reiniciar Capacitación
-            </Button>
+            <>
+              <Button
+                onClick={handleReset}
+                size="lg"
+                variant="outline"
+                className="border-institutional-blue text-institutional-blue hover:bg-institutional-blue hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+              >
+                <RotateCcw className="w-5 h-5 mr-2" />
+                Reiniciar Capacitación
+              </Button>
+              <Button
+                onClick={handleShowQuestion}
+                disabled={remainingQuestions === 0}
+                size="lg"
+                className="bg-gradient-to-r from-institutional-accent to-institutional-accent/80 hover:from-institutional-accent hover:to-institutional-accent text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+              >
+                <MessageCircleQuestion className="w-5 h-5 mr-2" />
+                Pregunta Extra
+              </Button>
+            </>
           )}
         </div>
 
