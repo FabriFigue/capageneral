@@ -48,8 +48,14 @@ export const TrainingApp = () => {
   };
 
   const handleStart = () => {
-    const participant = getRandomUnused(PARTICIPANTS, usedParticipants);
+    let participant = getRandomUnused(PARTICIPANTS, usedParticipants);
     const question = getRandomUnused(QUESTIONS, usedQuestions);
+
+    // Si no hay participantes disponibles, resetear la lista
+    if (!participant && usedParticipants.length > 0) {
+      setUsedParticipants([]);
+      participant = getRandomUnused(PARTICIPANTS, []);
+    }
 
     if (participant && question) {
       setCurrentParticipant(participant);
@@ -71,7 +77,9 @@ export const TrainingApp = () => {
   };
 
   const handleComplete = () => {
-    setIsComplete(true);
+    if (remainingQuestions === 0) {
+      setIsComplete(true);
+    }
   };
 
   const handleReset = () => {
@@ -219,34 +227,32 @@ export const TrainingApp = () => {
             <>
               <Button
                 onClick={handleStart}
-                disabled={remainingParticipants === 0}
+                disabled={remainingQuestions === 0}
                 size="lg"
                 className="bg-gradient-to-r from-institutional-blue to-institutional-blue-light hover:from-institutional-blue-dark hover:to-institutional-blue text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
                 style={{ boxShadow: 'var(--shadow-institutional)' }}
               >
                 ¡Vamos!
               </Button>
-              {remainingParticipants === 0 && (
-                <>
-                  <Button
-                    onClick={handleShowQuestion}
-                    disabled={remainingQuestions === 0}
-                    size="lg"
-                    variant="outline"
-                    className="border-institutional-accent text-institutional-accent hover:bg-institutional-accent hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-                  >
-                    <MessageCircleQuestion className="w-5 h-5 mr-2" />
-                    Solo Pregunta
-                  </Button>
-                  <Button
-                    onClick={handleComplete}
-                    size="lg"
-                    className="bg-gradient-to-r from-success to-success/80 hover:from-success hover:to-success text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-                  >
-                    <Users className="w-5 h-5 mr-2" />
-                    Finalizar
-                  </Button>
-                </>
+              <Button
+                onClick={handleShowQuestion}
+                disabled={remainingQuestions === 0}
+                size="lg"
+                variant="outline"
+                className="border-institutional-accent text-institutional-accent hover:bg-institutional-accent hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+              >
+                <MessageCircleQuestion className="w-5 h-5 mr-2" />
+                Solo Pregunta
+              </Button>
+              {remainingQuestions === 0 && (
+                <Button
+                  onClick={handleComplete}
+                  size="lg"
+                  className="bg-gradient-to-r from-success to-success/80 hover:from-success hover:to-success text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+                >
+                  <Users className="w-5 h-5 mr-2" />
+                  Finalizar
+                </Button>
               )}
             </>
           ) : (
