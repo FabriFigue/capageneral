@@ -99,7 +99,7 @@ export const TrainingApp = () => {
             Capacitación Ingresantes
           </h1>
           <p className="text-xl text-muted-foreground mb-2">
-            Campaña General - Jerárquicos Salud
+            Campaña Socios - Jerárquicos Salud
           </p>
           <p className="text-sm text-muted-foreground">
             Equipo: Abril, Agustina, Fabricio, Flavia, Gonzalo, Belén, Julieta y Nicolas
