@@ -91,9 +91,12 @@ export const TrainingApp = () => {
       <div className="container max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 pt-8">
-          <div className="inline-flex items-center gap-2 bg-institutional-blue/10 px-6 py-2 rounded-full mb-4">
-            <Users className="w-5 h-5 text-institutional-blue" />
-            <span className="text-institutional-blue font-medium">Jerárquicos Salud</span>
+          <div className="mb-4">
+            <img 
+              src="/lovable-uploads/ad436da4-9684-42bb-8d06-2e2507d86a9e.png" 
+              alt="Jerárquicos Salud" 
+              className="h-20 md:h-24 mx-auto"
+            />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 animate-fade-in">
             Capacitación Ingresantes
