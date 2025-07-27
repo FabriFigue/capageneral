@@ -30,7 +30,9 @@ const QUESTIONS = [
   '¿Cual es el porcentaje que recepcionamos de aporte en asalariados?',
   'Explica los porcentajes de cobertura de Prótesis Odontologica según plan.',
   'Llama Persona de 55 años que le ofrecemos.',
-  '¿Que beneficios tengo abonando la cuota societaria?'
+  '¿Que beneficios tengo abonando la cuota societaria?',
+  '¿Los planes PMI 2000 y 3000 tienen carencias en estética?',
+  '¿Se eliminan las carencias para autónomos que provienen de otras obras sociales?'
 ];
 
 export const TrainingApp = () => {
