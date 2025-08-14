@@ -115,7 +115,7 @@ export const TrainingApp = () => {
             Campaña Socios - Jerárquicos Salud
           </p>
           <p className="text-sm text-muted-foreground">
-            Equipo: Abril, Agustina, Fabricio, Flavia, Gonzalo, Belén, Julieta y Nicolas
+            Equipo: Catalina
           </p>
         </div>
 
@@ -207,7 +207,7 @@ export const TrainingApp = () => {
                     </div>
                     <div>
                       <h2 className="text-3xl font-bold text-success mb-4">
-                        ¡Todos participaron!
+                        Felicitaciones 👏🏻
                       </h2>
                       <p className="text-xl text-foreground mb-2">
                         ¡Buen trabajo, equipo!
