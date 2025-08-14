@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { RotateCcw, Users, MessageCircleQuestion } from 'lucide-react';
 
 const PARTICIPANTS = [
-  'Abril', 'Agustina', 'Fabricio', 'Flavia', 'Gonzalo', 'Belén', 'Julieta', 'Nicolas'
+  'Abril', 'Agustina', 'Fabricio', 'Flavia', 'Gonzalo', 'Belén', 'Julieta', 'Catalina'
 ];
 
 const QUESTIONS = [
