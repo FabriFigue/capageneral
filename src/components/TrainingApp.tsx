@@ -4,14 +4,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { RotateCcw, Users, MessageCircleQuestion } from 'lucide-react';
 import { quizQuestions, type QuizQuestion } from '@/data/quizData';
-
-const PARTICIPANTS = [
-  'Catalina'
-];
+import { loadLeaderboard, saveScore, type Leaderboard } from '@/data/participants';
+import { ParticipantSelect, LeaderboardCard } from '@/components/ParticipantSelect';
 
 const QUESTIONS = quizQuestions.map(question => question.question);
 
 export const TrainingApp = () => {
+  const [player, setPlayer] = useState<string>('');
+  const [leaderboard, setLeaderboard] = useState<Leaderboard>(() => loadLeaderboard());
+  const [score, setScore] = useState(0);
+  const PARTICIPANTS = player ? [player] : [];
   const [usedParticipants, setUsedParticipants] = useState<string[]>([]);
   const [usedQuestions, setUsedQuestions] = useState<string[]>([]);
   const [currentParticipant, setCurrentParticipant] = useState<string>('');
@@ -60,6 +62,7 @@ export const TrainingApp = () => {
 
   const handleComplete = () => {
     if (remainingQuestions === 0) {
+      setLeaderboard(prev => saveScore(prev, player, score));
       setIsComplete(true);
     }
   };
@@ -72,7 +75,19 @@ export const TrainingApp = () => {
     setIsComplete(false);
     setShowResult(false);
     setSelectedAnswer(null);
+    setScore(0);
+    setPlayer('');
   };
+
+  const handleAnswer = (index: number) => {
+    if (selectedAnswer !== null || !activeQuestion) return;
+    setSelectedAnswer(index);
+    if (index === activeQuestion.correctAnswer) setScore(prev => prev + 1);
+  };
+
+  if (!player) {
+    return <ParticipantSelect leaderboard={leaderboard} onStart={setPlayer} />;
+  }
 
   const remainingParticipants = PARTICIPANTS.length - usedParticipants.length;
   const remainingQuestions = QUESTIONS.length - usedQuestions.length;
@@ -96,7 +111,7 @@ export const TrainingApp = () => {
             Campaña Socios - Jerárquicos Salud
           </p>
           <p className="text-sm text-muted-foreground">
-            Equipo: Catalina
+            Participante: {player} · Puntaje: {score}/{quizQuestions.length}
           </p>
         </div>
 
@@ -192,7 +207,7 @@ export const TrainingApp = () => {
                                     variant="outline"
                                     aria-pressed={selected}
                                     disabled={answered}
-                                    onClick={() => setSelectedAnswer(index)}
+                                    onClick={() => handleAnswer(index)}
                                     className={`h-auto min-h-14 w-full justify-start whitespace-normal p-4 text-left leading-relaxed disabled:opacity-100 ${answered && correct ? 'border-success bg-success/10 text-foreground' : answered && selected ? 'border-destructive bg-destructive/10 text-foreground' : 'border-border text-foreground'}`}
                                   >
                                     <span className="shrink-0 font-semibold">{String.fromCharCode(65 + index)}.</span>
@@ -229,7 +244,7 @@ export const TrainingApp = () => {
                         ¡Buen trabajo, equipo!
                       </p>
                       <p className="text-muted-foreground">
-                        La capacitación ha finalizado exitosamente
+                        {player}, obtuviste {score} de {quizQuestions.length} respuestas correctas
                       </p>
                     </div>
                   </div>
@@ -282,7 +297,7 @@ export const TrainingApp = () => {
                 className="border-institutional-blue text-institutional-blue hover:bg-institutional-blue hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
               >
                 <RotateCcw className="w-5 h-5 mr-2" />
-                Reiniciar Capacitación
+                Elegir otro participante
               </Button>
               <Button
                 onClick={handleShowQuestion}
@@ -296,6 +311,8 @@ export const TrainingApp = () => {
             </>
           )}
         </div>
+
+        {isComplete && <LeaderboardCard leaderboard={leaderboard} />}
 
         {/* Used Participants List */}
         {usedParticipants.length > 0 && (
