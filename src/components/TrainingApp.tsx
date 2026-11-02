@@ -3,37 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { RotateCcw, Users, MessageCircleQuestion } from 'lucide-react';
+import { quizQuestions, type QuizQuestion } from '@/data/quizData';
 
 const PARTICIPANTS = [
   'Catalina'
 ];
 
-const QUESTIONS = [
-  '¿Qué es un plan PMI?',
-  '¿Qué es un plan PMI monotributo?',
-  '¿Qué es un plan PMI 2886?',
-  '¿Cómo se genera una baja (hijo PMI)?',
-  '¿Cómo se genera un alta (PMI) socio nuevo?',
-  'Mostrá en pantalla cómo actualizás los datos.',
-  '¿Un plan PMI 2886 puede bajar a PMO?',
-  'Nombrá línea de planes Jerárquicos.',
-  '¿A quiénes va dirigido el PLAN JOVEN?',
-  'Socio monotributista: ¿qué documentación deberá cargar para ingresar?',
-  '¿Qué planes sí tienen carencias?',
-  'Nombrá 2 servicios y detallá.',
-  '¿Qué es el fondo Jubilados?',
-  '¿Qué costo tiene el servicio de Prótesis Odontológica en un PMI 3000?',
-  '¿Qué es el servicio de interconsulta?',
-  '¿Un RN tiene cobertura?',
-  '¿Un socio con deuda en PMO puede solicitar volver a PMI?',
-  'Explicá con tus palabras la situación de hijo mayor de 21 años.',
-  '¿Cual es el porcentaje que recepcionamos de aporte en asalariados?',
-  'Explica los porcentajes de cobertura de Prótesis Odontologica según plan.',
-  'Llama Persona de 55 años que le ofrecemos.',
-  '¿Que beneficios tengo abonando la cuota societaria?',
-  '¿Los planes PMI 2000 y 3000 tienen carencias en estética?',
-  '¿Se eliminan las carencias para autónomos que provienen de otras obras sociales?'
-];
+const QUESTIONS = quizQuestions.map(question => question.question);
 
 export const TrainingApp = () => {
   const [usedParticipants, setUsedParticipants] = useState<string[]>([]);
@@ -42,6 +18,8 @@ export const TrainingApp = () => {
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
   const [isComplete, setIsComplete] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const activeQuestion: QuizQuestion | undefined = quizQuestions.find(question => question.question === currentQuestion);
 
   const getRandomUnused = (array: string[], usedArray: string[]) => {
     const available = array.filter(item => !usedArray.includes(item));
@@ -62,6 +40,7 @@ export const TrainingApp = () => {
     if (participant && question) {
       setCurrentParticipant(participant);
       setCurrentQuestion(question);
+      setSelectedAnswer(null);
       setUsedParticipants(prev => [...prev, participant]);
       setUsedQuestions(prev => [...prev, question]);
       setShowResult(true);
@@ -72,6 +51,7 @@ export const TrainingApp = () => {
     const question = getRandomUnused(QUESTIONS, usedQuestions);
     if (question) {
       setCurrentQuestion(question);
+      setSelectedAnswer(null);
       setUsedQuestions(prev => [...prev, question]);
       setShowResult(true);
       setCurrentParticipant('');
@@ -91,6 +71,7 @@ export const TrainingApp = () => {
     setCurrentQuestion('');
     setIsComplete(false);
     setShowResult(false);
+    setSelectedAnswer(null);
   };
 
   const remainingParticipants = PARTICIPANTS.length - usedParticipants.length;
@@ -124,7 +105,7 @@ export const TrainingApp = () => {
           <Card className="border-l-4 border-l-institutional-blue">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h5 text-institutional-blue" />
+                <Users className="w-5 h-5 text-institutional-blue" />
                 <div>
                   <p className="text-sm text-muted-foreground">Participantes restantes</p>
                   <p className="text-2xl font-bold text-institutional-blue">{remainingParticipants}</p>
@@ -147,7 +128,7 @@ export const TrainingApp = () => {
 
         {/* Main Content */}
         <Card className="mb-8" style={{ boxShadow: 'var(--shadow-institutional)' }}>
-          <CardContent className="p-8 text-center">
+          <CardContent className="p-4 sm:p-8 text-center">
             {!showResult ? (
               <div className="space-y-6">
                 <div className="w-20 h-20 mx-auto bg-gradient-to-br from-institutional-blue to-institutional-blue-light rounded-full flex items-center justify-center animate-pulse-slow">
@@ -197,6 +178,41 @@ export const TrainingApp = () => {
                         <p className="text-xl text-foreground font-medium leading-relaxed animate-fade-in">
                           {currentQuestion}
                         </p>
+                        {activeQuestion && (
+                          <div className="mt-6 text-left">
+                            <p className="mb-3 text-sm font-medium text-institutional-blue">{activeQuestion.category}</p>
+                            <div className="grid gap-3">
+                              {activeQuestion.options.map((option, index) => {
+                                const answered = selectedAnswer !== null;
+                                const correct = index === activeQuestion.correctAnswer;
+                                const selected = index === selectedAnswer;
+                                return (
+                                  <Button
+                                    key={option}
+                                    variant="outline"
+                                    aria-pressed={selected}
+                                    disabled={answered}
+                                    onClick={() => setSelectedAnswer(index)}
+                                    className={`h-auto min-h-14 w-full justify-start whitespace-normal p-4 text-left leading-relaxed disabled:opacity-100 ${answered && correct ? 'border-success bg-success/10 text-foreground' : answered && selected ? 'border-destructive bg-destructive/10 text-foreground' : 'border-border text-foreground'}`}
+                                  >
+                                    <span className="shrink-0 font-semibold">{String.fromCharCode(65 + index)}.</span>
+                                    <span className="min-w-0">{option}</span>
+                                  </Button>
+                                );
+                              })}
+                            </div>
+                            {selectedAnswer !== null && (
+                              <div role="status" aria-live="polite" className="mt-5 border-t pt-5">
+                                <p className={`font-semibold ${selectedAnswer === activeQuestion.correctAnswer ? 'text-success' : 'text-destructive'}`}>
+                                  {selectedAnswer === activeQuestion.correctAnswer ? '¡Respuesta correcta!' : 'Respuesta incorrecta'}
+                                </p>
+                                <p className="mt-2 text-foreground"><span className="font-semibold">Respuesta correcta: </span>{activeQuestion.options[activeQuestion.correctAnswer]}</p>
+                                <h4 className="mt-4 font-semibold text-institutional-blue">Explicación / fundamento</h4>
+                                <p className="mt-2 leading-relaxed text-foreground">{activeQuestion.explanation}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </>
@@ -229,7 +245,7 @@ export const TrainingApp = () => {
             <>
               <Button
                 onClick={handleStart}
-                disabled={remainingQuestions === 0}
+                disabled={remainingQuestions === 0 || (showResult && selectedAnswer === null)}
                 size="lg"
                 className="bg-gradient-to-r from-institutional-blue to-institutional-blue-light hover:from-institutional-blue-dark hover:to-institutional-blue text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
                 style={{ boxShadow: 'var(--shadow-institutional)' }}
@@ -238,7 +254,7 @@ export const TrainingApp = () => {
               </Button>
               <Button
                 onClick={handleShowQuestion}
-                disabled={remainingQuestions === 0}
+                disabled={remainingQuestions === 0 || (showResult && selectedAnswer === null)}
                 size="lg"
                 variant="outline"
                 className="border-institutional-accent text-institutional-accent hover:bg-institutional-accent hover:text-white px-8 py-6 text-xl font-semibold rounded-xl transition-all duration-200 hover:scale-105"
@@ -246,7 +262,7 @@ export const TrainingApp = () => {
                 <MessageCircleQuestion className="w-5 h-5 mr-2" />
                 Solo Pregunta
               </Button>
-              {remainingQuestions === 0 && (
+              {remainingQuestions === 0 && selectedAnswer !== null && (
                 <Button
                   onClick={handleComplete}
                   size="lg"
