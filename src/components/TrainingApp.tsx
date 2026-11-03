@@ -31,6 +31,17 @@ export function TrainingApp() {
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [turnQueue, setTurnQueue] = useState<string[]>([]);
+
+  // Cada participante tiene un turno antes de repetir a alguien:
+  // se baraja la lista y se va consumiendo; solo cuando se agota se baraja de nuevo.
+  const drawPlayer = (queue: string[]): { player: string; rest: string[] } => {
+    if (queue.length === 0) {
+      const reshuffled = shuffle(PARTICIPANTS);
+      return { player: reshuffled[0], rest: reshuffled.slice(1) };
+    }
+    return { player: queue[0], rest: queue.slice(1) };
+  };
 
   const prepareQuestion = (questionObj: Question) => {
     if (!questionObj) return;
@@ -53,8 +64,9 @@ export function TrainingApp() {
     setIsFinished(false);
     setScores({});
 
-    const randomFirst = PARTICIPANTS[Math.floor(Math.random() * PARTICIPANTS.length)];
-    setActivePlayer(randomFirst);
+    const first = drawPlayer([]);
+    setTurnQueue(first.rest);
+    setActivePlayer(first.player);
 
     prepareQuestion(shuffledQuestions[0]);
   };
