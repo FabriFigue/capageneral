@@ -19,7 +19,7 @@ const shuffle = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
 
-export default function TrainingApp() {
+export function TrainingApp() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [activePlayer, setActivePlayer] = useState<string>("");
@@ -49,6 +49,7 @@ export default function TrainingApp() {
     setSelectedOption(null);
     setShowExplanation(false);
     setIsFinished(false);
+    setScores({});
 
     const randomFirst = PARTICIPANTS[Math.floor(Math.random() * PARTICIPANTS.length)];
     setActivePlayer(randomFirst);
@@ -203,3 +204,5 @@ export default function TrainingApp() {
     </div>
   );
 }
+
+export default TrainingApp;
