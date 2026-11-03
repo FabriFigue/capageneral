@@ -97,8 +97,9 @@ export function TrainingApp() {
       const nextIndex = currentIndex + 1;
       setCurrentIndex(nextIndex);
 
-      const nextPlayer = PARTICIPANTS[Math.floor(Math.random() * PARTICIPANTS.length)];
-      setActivePlayer(nextPlayer);
+      const next = drawPlayer(turnQueue);
+      setTurnQueue(next.rest);
+      setActivePlayer(next.player);
 
       prepareQuestion(questions[nextIndex]);
     } else {
