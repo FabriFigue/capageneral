@@ -1,171 +1,205 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { RotateCcw, Trophy } from 'lucide-react';
-import { quizQuestions, type QuizQuestion } from '@/data/quizData';
-import { participants } from '@/data/participants';
+import React, { useState, useEffect } from 'react';
+import { quizQuestions } from '../data/quizData';
 
-const shuffle = <T,>(items: T[]): T[] => {
-  const a = [...items];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
+interface Question {
+  id: number;
+  category: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+}
+
+const PARTICIPANTS: string[] = [
+  "Nacho", "Male", "Fer", "Rodrigo", "Gabriela",
+  "Mara", "Nando", "Shaiel", "Geronimo", "Ana"
+];
+
+const shuffle = <T,>(array: T[]): T[] => {
+  return [...array].sort(() => Math.random() - 0.5);
 };
 
-const emptyScores = () => Object.fromEntries(participants.map(p => [p, 0])) as Record<string, number>;
+export default function TrainingApp() {
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [activePlayer, setActivePlayer] = useState<string>("");
+  const [currentOptions, setCurrentOptions] = useState<string[]>([]);
+  const [correctOptionIndex, setCorrectOptionIndex] = useState<number | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [showExplanation, setShowExplanation] = useState<boolean>(false);
+  const [scores, setScores] = useState<Record<string, number>>({});
+  const [isFinished, setIsFinished] = useState<boolean>(false);
 
-/** Picks a random participant, avoiding repeats until everyone has had a turn. */
-const drawTurn = (pending: string[]): { name: string; rest: string[] } => {
-  const pool = pending.length ? pending : participants;
-  const name = pool[Math.floor(Math.random() * pool.length)];
-  return { name, rest: pool.filter(p => p !== name) };
-};
+  const prepareQuestion = (questionObj: Question) => {
+    if (!questionObj) return;
+    const correctText = questionObj.options[questionObj.correctAnswer];
+    const shuffledOpts = shuffle(questionObj.options);
+    const newCorrectIdx = shuffledOpts.indexOf(correctText);
 
-const newGame = () => {
-  const { name, rest } = drawTurn([]);
-  return { deck: shuffle(quizQuestions), index: 0, player: name, pending: rest };
-};
-
-export const TrainingApp = () => {
-  const [game, setGame] = useState(newGame);
-  const [scores, setScores] = useState(emptyScores);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [finished, setFinished] = useState(false);
-
-  const q: QuizQuestion = game.deck[game.index];
-  const isLast = game.index === game.deck.length - 1;
-
-  const restart = () => {
-    setGame(newGame());
-    setScores(emptyScores());
-    setSelected(null);
-    setFinished(false);
+    setCurrentOptions(shuffledOpts);
+    setCorrectOptionIndex(newCorrectIdx);
+    setSelectedOption(null);
+    setShowExplanation(false);
   };
 
-  const answer = (i: number) => {
-    if (selected !== null) return;
-    setSelected(i);
-    if (i === q.correctAnswer) setScores(s => ({ ...s, [game.player]: s[game.player] + 1 }));
+  const initGame = () => {
+    const shuffledQuestions = shuffle(quizQuestions);
+    setQuestions(shuffledQuestions);
+    setCurrentIndex(0);
+    setSelectedOption(null);
+    setShowExplanation(false);
+    setIsFinished(false);
+
+    const randomFirst = PARTICIPANTS[Math.floor(Math.random() * PARTICIPANTS.length)];
+    setActivePlayer(randomFirst);
+
+    prepareQuestion(shuffledQuestions[0]);
   };
 
-  const next = () => {
-    if (isLast) {
-      setFinished(true);
-      return;
+  useEffect(() => {
+    initGame();
+  }, []);
+
+  if (questions.length === 0) return null;
+
+  const currentQ = questions[currentIndex];
+
+  const handleSelectOption = (index: number) => {
+    if (selectedOption !== null) return;
+    setSelectedOption(index);
+    setShowExplanation(true);
+
+    if (index === correctOptionIndex) {
+      setScores((prev) => ({
+        ...prev,
+        [activePlayer]: (prev[activePlayer] || 0) + 1
+      }));
     }
-    const { name, rest } = drawTurn(game.pending);
-    setGame(g => ({ ...g, index: g.index + 1, player: name, pending: rest }));
-    setSelected(null);
   };
 
-  const ranking = participants.map(p => [p, scores[p]] as const).sort((a, b) => b[1] - a[1]);
+  const handleNext = () => {
+    if (currentIndex + 1 < questions.length) {
+      const nextIndex = currentIndex + 1;
+      setCurrentIndex(nextIndex);
+
+      const nextPlayer = PARTICIPANTS[Math.floor(Math.random() * PARTICIPANTS.length)];
+      setActivePlayer(nextPlayer);
+
+      prepareQuestion(questions[nextIndex]);
+    } else {
+      setIsFinished(true);
+    }
+  };
+
+  if (isFinished) {
+    return (
+      <div className="max-w-2xl mx-auto my-8 p-6 bg-card border rounded-xl shadow-institutional text-center">
+        <h2 className="text-3xl font-extrabold text-primary mb-2">¡Ronda Finalizada!</h2>
+        <p className="text-muted-foreground text-sm mb-6">Módulo: Socios, Cuentas Corrientes y Cobranzas</p>
+
+        <h3 className="text-lg font-bold text-foreground mb-4">Tabla de Posiciones</h3>
+        <div className="grid grid-cols-2 gap-3 max-w-md mx-auto mb-8">
+          {PARTICIPANTS.map((name) => (
+            <div key={name} className="flex justify-between items-center p-3 bg-secondary rounded-lg border">
+              <span className="font-semibold text-foreground text-sm">{name}</span>
+              <span className="font-bold text-primary bg-background px-2.5 py-1 rounded shadow-sm text-sm">
+                {scores[name] || 0} pts
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={initGame}
+          className="px-6 py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-all shadow-soft"
+        >
+          Nueva Ronda (Mezclar Todo)
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-institutional-blue/5 p-4">
-      <div className="container max-w-4xl mx-auto">
-        <div className="flex justify-end pt-4">
-          <Button variant="outline" onClick={restart} className="border-institutional-blue text-institutional-blue">
-            <RotateCcw className="w-4 h-4 mr-2" /> Reiniciar
-          </Button>
+    <div className="max-w-3xl mx-auto my-8 p-6 bg-card border rounded-xl shadow-institutional">
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground uppercase font-semibold">Le toca a:</span>
+          <span className="text-sm font-extrabold text-primary-foreground bg-primary px-3 py-1 rounded-full shadow-sm animate-pulse">
+            🎲 {activePlayer}
+          </span>
         </div>
 
-        <div className="text-center mb-6">
-          <img src="/lovable-uploads/ad436da4-9684-42bb-8d06-2e2507d86a9e.png" alt="Jerárquicos Salud" className="h-20 md:h-24 mx-auto mb-4" />
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">Capacitación Ingresantes</h1>
-          <p className="text-xl text-muted-foreground">Campaña Socios - Jerárquicos Salud</p>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-semibold text-muted-foreground">
+            Pregunta {currentIndex + 1} de {questions.length}
+          </span>
+          <button
+            onClick={initGame}
+            title="Reiniciar cuestionario"
+            className="text-xs px-2.5 py-1 rounded border border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all"
+          >
+            ↺ Reiniciar
+          </button>
         </div>
-
-        <Card className="mb-8" style={{ boxShadow: 'var(--shadow-institutional)' }}>
-          <CardContent className="p-4 sm:p-8">
-            {finished ? (
-              <div className="text-center space-y-6 animate-fade-in">
-                <Trophy className="w-14 h-14 mx-auto text-institutional-accent" />
-                <h2 className="text-3xl font-bold text-success">Felicitaciones 👏🏻</h2>
-                <p className="text-muted-foreground">Puntaje final de la ronda</p>
-                <ol className="text-left max-w-md mx-auto space-y-2">
-                  {ranking.map(([name, pts], i) => (
-                    <li key={name} className="flex justify-between border-b pb-2 last:border-0 text-foreground">
-                      <span><span className="font-semibold text-institutional-blue">{i + 1}.</span> {name}</span>
-                      <span className="font-bold">{pts} pts</span>
-                    </li>
-                  ))}
-                </ol>
-                <Button onClick={restart} size="lg" className="bg-gradient-to-r from-institutional-blue to-institutional-blue-light text-white text-xl px-8 py-6 rounded-xl">
-                  Nueva Ronda
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-6 animate-slide-up">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <Badge variant="secondary" className="bg-institutional-blue text-white px-4 py-2 text-base">
-                    Pregunta {game.index + 1} de {game.deck.length}
-                  </Badge>
-                  <span className="text-sm font-medium text-institutional-blue">{q.category}</span>
-                </div>
-
-                <p className="text-3xl font-bold text-institutional-blue text-center animate-fade-in" key={game.index}>
-                  🎲 Le toca a: {game.player}
-                </p>
-
-                <p className="text-xl text-foreground font-medium leading-relaxed">{q.question}</p>
-
-                <div className="grid gap-3">
-                  {q.options.map((option, i) => {
-                    const answered = selected !== null;
-                    const correct = i === q.correctAnswer;
-                    return (
-                      <Button
-                        key={option}
-                        variant="outline"
-                        disabled={answered}
-                        onClick={() => answer(i)}
-                        className={`h-auto min-h-14 w-full justify-start whitespace-normal p-4 text-left leading-relaxed disabled:opacity-100 ${answered && correct ? 'border-success bg-success/10' : answered && i === selected ? 'border-destructive bg-destructive/10' : ''} text-foreground`}
-                      >
-                        <span className="shrink-0 font-semibold">{String.fromCharCode(65 + i)}.</span>
-                        <span className="min-w-0">{option}</span>
-                      </Button>
-                    );
-                  })}
-                </div>
-
-                {selected !== null && (
-                  <div role="status" aria-live="polite" className="border-t pt-5">
-                    <p className={`font-semibold ${selected === q.correctAnswer ? 'text-success' : 'text-destructive'}`}>
-                      {selected === q.correctAnswer ? `¡Correcto! +1 punto para ${game.player}` : 'Respuesta incorrecta'}
-                    </p>
-                    <p className="mt-2 text-foreground"><span className="font-semibold">Respuesta correcta: </span>{q.options[q.correctAnswer]}</p>
-                    <h4 className="mt-4 font-semibold text-institutional-blue">Explicación / fundamento</h4>
-                    <p className="mt-2 leading-relaxed text-foreground">{q.explanation}</p>
-                    <div className="mt-6 flex justify-end">
-                      <Button onClick={next} size="lg" className="bg-gradient-to-r from-institutional-blue to-institutional-blue-light text-white text-lg px-6 rounded-xl">
-                        {isLast ? 'Ver resultados →' : 'Siguiente Turno →'}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {!finished && (
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Puntajes</h3>
-              <div className="flex flex-wrap gap-2">
-                {participants.map(p => (
-                  <Badge key={p} variant="secondary" className={p === game.player ? 'bg-institutional-blue text-white' : 'bg-muted text-muted-foreground'}>
-                    {p}: {scores[p]}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
+
+      <div className="mb-2">
+        <span className="text-[11px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-secondary text-primary">
+          {currentQ.category}
+        </span>
+      </div>
+
+      <h3 className="text-lg md:text-xl font-bold text-foreground mb-6 leading-relaxed">
+        {currentQ.question}
+      </h3>
+
+      <div className="space-y-3 mb-6">
+        {currentOptions.map((option, idx) => {
+          let btnStyle = "bg-card border hover:bg-secondary/60 text-foreground";
+
+          if (selectedOption !== null) {
+            if (idx === correctOptionIndex) {
+              btnStyle = "bg-success text-success-foreground border-success font-semibold shadow-sm";
+            } else if (idx === selectedOption) {
+              btnStyle = "bg-destructive text-destructive-foreground border-destructive";
+            } else {
+              btnStyle = "opacity-40 border bg-muted";
+            }
+          }
+
+          return (
+            <button
+              key={idx}
+              onClick={() => handleSelectOption(idx)}
+              disabled={selectedOption !== null}
+              className={`w-full text-left p-4 rounded-lg border transition-all text-sm md:text-base flex items-start gap-3 ${btnStyle}`}
+            >
+              <span className="font-bold text-xs mt-0.5 px-2 py-0.5 rounded border border-current">
+                {String.fromCharCode(65 + idx)}
+              </span>
+              <span className="flex-1">{option}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {showExplanation && (
+        <div className="p-4 bg-secondary/80 rounded-lg border border-border mb-6 text-sm text-foreground">
+          <p className="font-bold mb-1 text-primary">Fundamento normativo:</p>
+          <p>{currentQ.explanation}</p>
+        </div>
+      )}
+
+      {selectedOption !== null && (
+        <div className="flex justify-end">
+          <button
+            onClick={handleNext}
+            className="px-6 py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-all shadow-soft"
+          >
+            {currentIndex + 1 === questions.length ? "Ver Resultados Finales" : "Siguiente Turno →"}
+          </button>
+        </div>
+      )}
     </div>
   );
-};
+}
