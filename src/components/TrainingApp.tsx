@@ -228,6 +228,7 @@ export function TrainingApp() {
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 }
