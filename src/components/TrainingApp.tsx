@@ -15,6 +15,8 @@ const PARTICIPANTS: string[] = [
   "Mara", "Nando", "Shaiel", "Geronimo", "Ana"
 ];
 
+const LOGO_URL = "/lovable-uploads/ad436da4-9684-42bb-8d06-2e2507d86a9e.png";
+
 const shuffle = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
@@ -29,6 +31,17 @@ export function TrainingApp() {
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [turnQueue, setTurnQueue] = useState<string[]>([]);
+
+  // Cada participante tiene un turno antes de repetir a alguien:
+  // se baraja la lista y se va consumiendo; solo cuando se agota se baraja de nuevo.
+  const drawPlayer = (queue: string[]): { player: string; rest: string[] } => {
+    if (queue.length === 0) {
+      const reshuffled = shuffle(PARTICIPANTS);
+      return { player: reshuffled[0], rest: reshuffled.slice(1) };
+    }
+    return { player: queue[0], rest: queue.slice(1) };
+  };
 
   const prepareQuestion = (questionObj: Question) => {
     if (!questionObj) return;
@@ -51,8 +64,9 @@ export function TrainingApp() {
     setIsFinished(false);
     setScores({});
 
-    const randomFirst = PARTICIPANTS[Math.floor(Math.random() * PARTICIPANTS.length)];
-    setActivePlayer(randomFirst);
+    const first = drawPlayer([]);
+    setTurnQueue(first.rest);
+    setActivePlayer(first.player);
 
     prepareQuestion(shuffledQuestions[0]);
   };
@@ -83,8 +97,9 @@ export function TrainingApp() {
       const nextIndex = currentIndex + 1;
       setCurrentIndex(nextIndex);
 
-      const nextPlayer = PARTICIPANTS[Math.floor(Math.random() * PARTICIPANTS.length)];
-      setActivePlayer(nextPlayer);
+      const next = drawPlayer(turnQueue);
+      setTurnQueue(next.rest);
+      setActivePlayer(next.player);
 
       prepareQuestion(questions[nextIndex]);
     } else {
@@ -121,7 +136,19 @@ export function TrainingApp() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto my-8 p-6 bg-card border rounded-xl shadow-institutional">
+    <div className="max-w-3xl mx-auto my-8 px-4">
+      <header className="flex flex-col items-center text-center mb-6">
+        <img
+          src={LOGO_URL}
+          alt="Jerárquicos Salud"
+          className="h-20 md:h-24 w-auto object-contain"
+        />
+        <h1 className="mt-3 text-xl md:text-3xl font-extrabold text-primary tracking-tight">
+          Capacitación Ingresantes – Campaña Socios
+        </h1>
+      </header>
+
+      <div className="p-6 bg-card border rounded-xl shadow-institutional">
       <div className="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b">
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground uppercase font-semibold">Le toca a:</span>
@@ -201,6 +228,7 @@ export function TrainingApp() {
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 }
