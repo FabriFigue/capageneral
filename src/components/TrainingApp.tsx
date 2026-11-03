@@ -15,6 +15,8 @@ const PARTICIPANTS: string[] = [
   "Mara", "Nando", "Shaiel", "Geronimo", "Ana"
 ];
 
+const LOGO_URL = "/lovable-uploads/ad436da4-9684-42bb-8d06-2e2507d86a9e.png";
+
 const shuffle = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
