@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			boxShadow: {
+				institutional: 'var(--shadow-institutional)',
+				soft: 'var(--shadow-soft)'
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
