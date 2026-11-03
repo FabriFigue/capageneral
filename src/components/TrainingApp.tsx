@@ -136,7 +136,19 @@ export function TrainingApp() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto my-8 p-6 bg-card border rounded-xl shadow-institutional">
+    <div className="max-w-3xl mx-auto my-8 px-4">
+      <header className="flex flex-col items-center text-center mb-6">
+        <img
+          src={LOGO_URL}
+          alt="Jerárquicos Salud"
+          className="h-20 md:h-24 w-auto object-contain"
+        />
+        <h1 className="mt-3 text-xl md:text-3xl font-extrabold text-primary tracking-tight">
+          Capacitación Ingresantes – Campaña Socios
+        </h1>
+      </header>
+
+      <div className="p-6 bg-card border rounded-xl shadow-institutional">
       <div className="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b">
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground uppercase font-semibold">Le toca a:</span>
