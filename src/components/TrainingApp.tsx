@@ -207,7 +207,7 @@ export function TrainingApp() {
               key={idx}
               onClick={() => handleSelectOption(idx)}
               disabled={selectedOption !== null}
-              className={`quiz-option w-full h-auto min-h-16 whitespace-normal text-left p-4 rounded-lg border text-sm md:text-base flex items-start justify-start gap-3 disabled:pointer-events-auto ${btnStyle}`}
+              className={`quiz-option w-full h-auto min-h-16 whitespace-normal text-left p-4 rounded-lg border text-sm md:text-base flex items-start justify-start gap-3 ${btnStyle}`}
             >
               <span className="font-bold text-xs mt-0.5 px-2 py-0.5 rounded border border-current">
                 {String.fromCharCode(65 + idx)}
