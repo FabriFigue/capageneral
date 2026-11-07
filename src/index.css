@@ -160,7 +160,7 @@ All colors MUST be HSL.
 .quiz-progress::-webkit-progress-value { background: var(--gradient-progress); transition: width 500ms ease; }
 .quiz-progress::-moz-progress-bar { background: var(--gradient-progress); }
 .quiz-option { transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease; }
-.quiz-option:disabled { opacity: 1; }
+.quiz-glass .quiz-option:disabled { opacity: 1; }
 .quiz-option-correct { border-color: hsl(var(--quiz-emerald)); background: hsl(var(--quiz-emerald) / 0.08); color: hsl(var(--quiz-success-text)); }
 .quiz-option-wrong { animation: quiz-shake 380ms ease; }
 .quiz-check { animation: quiz-check 320ms ease both; }
