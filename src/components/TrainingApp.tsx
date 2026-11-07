@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { quizQuestions } from '../data/quizData';
+import { Button } from './ui/button';
+import { ArrowRight, Check, RotateCcw, Shuffle, Trophy, X } from 'lucide-react';
 
 interface Question {
   id: number;
@@ -109,7 +111,9 @@ export function TrainingApp() {
 
   if (isFinished) {
     return (
-      <div className="max-w-2xl mx-auto my-8 p-6 bg-card border rounded-xl shadow-institutional text-center">
+      <div className="quiz-stage px-4 py-10"><div className="quiz-glass max-w-2xl mx-auto p-6 md:p-8 text-center">
+        <img src={LOGO_URL} alt="Jerárquicos Salud" className="h-20 md:h-24 w-auto mx-auto mb-6 object-contain" />
+        <Trophy className="w-8 h-8 mx-auto mb-3 text-primary" aria-hidden="true" />
         <h2 className="text-3xl font-extrabold text-primary mb-2">¡Ronda Finalizada!</h2>
         <p className="text-muted-foreground text-sm mb-6">Módulo: Socios, Cuentas Corrientes y Cobranzas</p>
 
@@ -125,35 +129,37 @@ export function TrainingApp() {
           ))}
         </div>
 
-        <button
+        <Button
           onClick={initGame}
           className="px-6 py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-all shadow-soft"
         >
-          Nueva Ronda (Mezclar Todo)
-        </button>
-      </div>
+          <Shuffle aria-hidden="true" /> Nueva Ronda (Mezclar Todo)
+        </Button>
+      </div></div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto my-8 px-4">
-      <header className="flex flex-col items-center text-center mb-6">
+    <div className="quiz-stage"><div className="max-w-3xl mx-auto py-6 md:py-8 px-4">
+      <header className="flex flex-col items-center text-center mb-7 md:mb-8">
         <img
           src={LOGO_URL}
           alt="Jerárquicos Salud"
           className="h-20 md:h-24 w-auto object-contain"
         />
-        <h1 className="mt-3 text-xl md:text-3xl font-extrabold text-primary tracking-tight">
-          Capacitación Ingresantes – Campaña General
+        <h1 className="mt-4 text-xl md:text-2xl font-bold text-primary leading-snug">
+          Capacitación Ingresantes – Campaña Socios
         </h1>
       </header>
 
-      <div className="p-6 bg-card border rounded-xl shadow-institutional">
+      <div className="quiz-glass overflow-hidden">
+      <progress className="quiz-progress" value={currentIndex + 1} max={questions.length} aria-label="Progreso del cuestionario" />
+      <div className="p-5 md:p-8">
       <div className="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b">
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground uppercase font-semibold">Le toca a:</span>
-          <span className="text-sm font-extrabold text-primary-foreground bg-primary px-3 py-1 rounded-full shadow-sm animate-pulse">
-            🎲 {activePlayer}
+          <span key={currentIndex} className="quiz-turn text-sm font-bold text-primary-foreground bg-primary px-3 py-1.5 rounded-md shadow-sm" aria-live="polite">
+            {activePlayer}
           </span>
         </div>
 
@@ -161,13 +167,14 @@ export function TrainingApp() {
           <span className="text-xs font-semibold text-muted-foreground">
             Pregunta {currentIndex + 1} de {questions.length}
           </span>
-          <button
+          <Button variant="ghost" size="icon"
             onClick={initGame}
             title="Reiniciar cuestionario"
-            className="text-xs px-2.5 py-1 rounded border border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all"
+             aria-label="Reiniciar cuestionario"
+             className="text-muted-foreground hover:bg-secondary hover:text-primary h-8 w-8"
           >
-            ↺ Reiniciar
-          </button>
+            <RotateCcw aria-hidden="true" />
+          </Button>
         </div>
       </div>
 
@@ -187,32 +194,37 @@ export function TrainingApp() {
 
           if (selectedOption !== null) {
             if (idx === correctOptionIndex) {
-              btnStyle = "bg-success text-success-foreground border-success font-semibold shadow-sm";
+              btnStyle = "quiz-option-correct font-semibold shadow-sm";
             } else if (idx === selectedOption) {
-              btnStyle = "bg-destructive text-destructive-foreground border-destructive";
+              btnStyle = "quiz-option-wrong bg-destructive/10 text-destructive border-destructive";
             } else {
-              btnStyle = "opacity-40 border bg-muted";
+              btnStyle = "border bg-muted/40 text-muted-foreground";
             }
           }
 
           return (
-            <button
+            <Button variant="outline"
               key={idx}
               onClick={() => handleSelectOption(idx)}
               disabled={selectedOption !== null}
-              className={`w-full text-left p-4 rounded-lg border transition-all text-sm md:text-base flex items-start gap-3 ${btnStyle}`}
+              className={`quiz-option w-full h-auto min-h-16 whitespace-normal text-left p-4 rounded-lg border text-sm md:text-base flex items-start justify-start gap-3 ${btnStyle}`}
             >
               <span className="font-bold text-xs mt-0.5 px-2 py-0.5 rounded border border-current">
                 {String.fromCharCode(65 + idx)}
               </span>
               <span className="flex-1">{option}</span>
-            </button>
+              {selectedOption !== null && idx === correctOptionIndex && <Check className="quiz-check mt-0.5" aria-label="Respuesta correcta" />}
+              {selectedOption === idx && idx !== correctOptionIndex && <X className="mt-0.5" aria-label="Respuesta incorrecta" />}
+            </Button>
           );
         })}
       </div>
 
       {showExplanation && (
-        <div className="p-4 bg-secondary/80 rounded-lg border border-border mb-6 text-sm text-foreground">
+        <div role="status" className="quiz-turn p-4 bg-secondary/80 rounded-lg border border-border mb-6 text-sm text-foreground leading-relaxed">
+          <p className={`font-semibold mb-2 ${selectedOption === correctOptionIndex ? 'text-primary' : 'text-destructive'}`}>
+            {selectedOption === correctOptionIndex ? '¡Respuesta correcta!' : 'Respuesta incorrecta'}
+          </p>
           <p className="font-bold mb-1 text-primary">Fundamento normativo:</p>
           <p>{currentQ.explanation}</p>
         </div>
@@ -220,14 +232,17 @@ export function TrainingApp() {
 
       {selectedOption !== null && (
         <div className="flex justify-end">
-          <button
+          <Button
             onClick={handleNext}
             className="px-6 py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-all shadow-soft"
           >
-            {currentIndex + 1 === questions.length ? "Ver Resultados Finales" : "Siguiente Turno →"}
-          </button>
+            {currentIndex + 1 === questions.length ? "Ver Resultados Finales" : "Siguiente Turno"}
+            <ArrowRight aria-hidden="true" />
+          </Button>
         </div>
       )}
+      </div>
+      </div>
       </div>
     </div>
   );
