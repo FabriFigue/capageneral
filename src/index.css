@@ -141,6 +141,10 @@ All colors MUST be HSL.
   background: hsl(var(--background));
 }
 
+.quiz-stage header img {
+  mix-blend-mode: multiply;
+}
+
 .quiz-stage::before, .quiz-stage::after {
   content: "";
   position: fixed;
