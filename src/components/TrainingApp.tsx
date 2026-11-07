@@ -158,8 +158,9 @@ export function TrainingApp() {
       <div className="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b">
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground uppercase font-semibold">Le toca a:</span>
-          <span key={currentIndex} className="quiz-turn text-sm font-bold text-primary-foreground bg-primary px-3 py-1.5 rounded-md shadow-sm" aria-live="polite">
-            {activePlayer}
+          <span key={currentIndex} className="quiz-turn snake-turn relative overflow-hidden rounded-full p-[2px] inline-flex" aria-live="polite">
+            <span className="absolute inset-[-200%] animate-snake snake-gradient pointer-events-none" aria-hidden="true" />
+            <span className="snake-turn-content relative z-10 px-4 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold uppercase">{activePlayer}</span>
           </span>
         </div>
 
@@ -190,15 +191,15 @@ export function TrainingApp() {
 
       <div className="space-y-3 mb-6">
         {currentOptions.map((option, idx) => {
-          let btnStyle = "bg-card border hover:bg-secondary/60 text-foreground";
+          let btnStyle = "text-foreground";
 
           if (selectedOption !== null) {
             if (idx === correctOptionIndex) {
-              btnStyle = "quiz-option-correct font-semibold shadow-sm";
+              btnStyle = "quiz-option-correct font-semibold";
             } else if (idx === selectedOption) {
-              btnStyle = "quiz-option-wrong bg-destructive/10 text-destructive border-destructive";
+              btnStyle = "quiz-option-wrong text-destructive";
             } else {
-              btnStyle = "border bg-muted/40 text-muted-foreground";
+              btnStyle = "quiz-option-muted text-muted-foreground";
             }
           }
 
@@ -207,14 +208,18 @@ export function TrainingApp() {
               key={idx}
               onClick={() => handleSelectOption(idx)}
               disabled={selectedOption !== null}
-              className={`quiz-option w-full h-auto min-h-16 whitespace-normal text-left p-4 rounded-lg border text-sm md:text-base flex items-start justify-start gap-3 ${btnStyle}`}
+              aria-pressed={selectedOption === idx}
+              className={`quiz-option snake-option relative overflow-hidden rounded-2xl p-[2px] transition-all duration-300 w-full h-auto whitespace-normal text-left border-0 ${btnStyle}`}
             >
-              <span className="font-bold text-xs mt-0.5 px-2 py-0.5 rounded border border-current">
+              <span className="snake-beam absolute inset-[-200%] animate-snake snake-gradient pointer-events-none" aria-hidden="true" />
+              <span className="snake-option-content relative z-10 flex items-start gap-4 rounded-[14px] px-5 py-4 w-full min-h-16 text-left transition-colors text-sm md:text-base">
+              <span className="snake-letter shrink-0 font-bold text-xs mt-0.5 px-2 py-0.5 rounded border border-current">
                 {String.fromCharCode(65 + idx)}
               </span>
               <span className="flex-1">{option}</span>
               {selectedOption !== null && idx === correctOptionIndex && <Check className="quiz-check mt-0.5" aria-label="Respuesta correcta" />}
               {selectedOption === idx && idx !== correctOptionIndex && <X className="mt-0.5" aria-label="Respuesta incorrecta" />}
+              </span>
             </Button>
           );
         })}

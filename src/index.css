@@ -47,8 +47,14 @@ All colors MUST be HSL.
     --mesh-cyan: 189 94% 43%;
     --quiz-emerald: 160 84% 39%;
     --quiz-success-text: 160 84% 25%;
+    --snake-violet: 270 95% 75%;
+    --turn-surface: 222 47% 11%;
+    --turn-foreground: 0 0% 100%;
+    --gradient-snake: conic-gradient(from 0deg, transparent 0deg, transparent 240deg, hsl(var(--quiz-emerald)) 280deg, hsl(var(--mesh-cyan)) 320deg, hsl(var(--snake-violet)) 360deg);
+    --gradient-selected: linear-gradient(90deg, hsl(var(--quiz-emerald)), hsl(var(--mesh-cyan)));
+    --shadow-selected: 0 10px 20px -5px hsl(var(--mesh-cyan) / 0.1);
     --gradient-progress: linear-gradient(90deg, hsl(var(--mesh-cyan)), hsl(var(--quiz-emerald)));
-    --shadow-quiz: 0 20px 45px -12px hsl(var(--institutional-blue) / 0.08);
+    --shadow-quiz: 0 25px 50px -12px hsl(var(--institutional-blue) / 0.12);
 
     /* Gradientes institucionales */
     --gradient-primary: linear-gradient(135deg, hsl(var(--institutional-blue)), hsl(var(--institutional-blue-light)));
@@ -137,22 +143,20 @@ All colors MUST be HSL.
 
 .quiz-stage::before, .quiz-stage::after {
   content: "";
-  position: absolute;
+  position: fixed;
   z-index: -1;
-  width: min(560px, 85vw);
   aspect-ratio: 1;
   border-radius: 50%;
-  filter: blur(64px);
-  opacity: 0.17;
+  opacity: 0.15;
   pointer-events: none;
 }
-.quiz-stage::before { top: -180px; left: -180px; background: hsl(var(--mesh-blue)); }
-.quiz-stage::after { top: 240px; right: -220px; background: hsl(var(--mesh-cyan)); }
+.quiz-stage::before { width: 500px; top: -120px; right: -120px; filter: blur(120px); background: hsl(var(--mesh-blue)); }
+.quiz-stage::after { width: 450px; bottom: -120px; left: -120px; filter: blur(100px); background: hsl(var(--quiz-emerald)); }
 .quiz-glass {
-  background: hsl(var(--card) / 0.9);
+  background: hsl(var(--card) / 0.95);
   backdrop-filter: blur(12px);
-  border: 1px solid hsl(var(--border) / 0.7);
-  border-radius: 1rem;
+  border: 1px solid hsl(var(--border) / 0.4);
+  border-radius: 1.5rem;
   box-shadow: var(--shadow-quiz);
 }
 .quiz-progress { display: block; width: 100%; height: 5px; border: 0; appearance: none; overflow: hidden; background: hsl(var(--muted)); }
@@ -165,10 +169,35 @@ All colors MUST be HSL.
 .quiz-option-wrong { animation: quiz-shake 380ms ease; }
 .quiz-check { animation: quiz-check 320ms ease both; }
 .quiz-turn { animation: quiz-turn 350ms ease both; }
+@keyframes border-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-snake { animation: border-rotate 3.5s linear infinite; }
+.snake-gradient { background: var(--gradient-snake); }
+.snake-option { background: hsl(var(--border)); }
+.snake-option:hover { background: hsl(var(--border)); }
+.snake-option:not(:disabled):hover { color: hsl(var(--foreground)); }
+.snake-beam { opacity: 0; transition: opacity 300ms ease; }
+.snake-option:not(:disabled):hover .snake-beam,
+.snake-option:focus-visible .snake-beam,
+.snake-option[aria-pressed="true"] .snake-beam { opacity: 1; }
+.snake-option-content { background: hsl(var(--card)); color: inherit; }
+.snake-option[aria-pressed="true"] { box-shadow: var(--shadow-selected); }
+.snake-option[aria-pressed="true"] .snake-option-content { background: hsl(var(--card)); background-image: linear-gradient(hsl(var(--mesh-blue) / 0.04), hsl(var(--mesh-blue) / 0.04)); }
+.snake-option[aria-pressed="true"] .snake-letter { background: var(--gradient-selected); color: hsl(var(--turn-foreground)); border-color: transparent; }
+.snake-option.quiz-option-correct { background: hsl(var(--quiz-emerald)); }
+.snake-option.quiz-option-correct .snake-option-content { background: hsl(var(--card)); background-image: linear-gradient(hsl(var(--quiz-emerald) / 0.08), hsl(var(--quiz-emerald) / 0.08)); }
+.snake-option.quiz-option-wrong { background: hsl(var(--destructive)); }
+.snake-option.quiz-option-wrong .snake-option-content { background: hsl(var(--card)); background-image: linear-gradient(hsl(var(--destructive) / 0.07), hsl(var(--destructive) / 0.07)); }
+.snake-option-muted .snake-option-content { background: hsl(var(--card)); background-image: linear-gradient(hsl(var(--muted) / 0.4), hsl(var(--muted) / 0.4)); }
+.snake-turn { background: hsl(var(--border)); }
+.snake-turn-content { background: hsl(var(--turn-surface)); color: hsl(var(--turn-foreground)); }
 @keyframes quiz-shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
 @keyframes quiz-check { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 @keyframes quiz-turn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) {
   .quiz-option, .quiz-progress::-webkit-progress-value { transition: none; }
-  .quiz-turn, .quiz-check, .quiz-option-wrong { animation: none; }
+  .quiz-turn, .quiz-check, .quiz-option-wrong, .animate-snake { animation: none; }
+  .snake-beam { transition: none; }
 }
