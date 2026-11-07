@@ -148,7 +148,7 @@ export function TrainingApp() {
           className="h-20 md:h-24 w-auto object-contain"
         />
         <h1 className="mt-4 text-xl md:text-2xl font-bold text-primary leading-snug">
-          Capacitación Ingresantes – Campaña Socios
+          Capacitación Ingresantes – Campaña General
         </h1>
       </header>
 
