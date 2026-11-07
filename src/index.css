@@ -177,6 +177,7 @@ All colors MUST be HSL.
 .snake-gradient { background: var(--gradient-snake); }
 .snake-option { background: hsl(var(--border)); }
 .snake-option:hover { background: hsl(var(--border)); }
+.snake-option:not(:disabled):hover { color: hsl(var(--foreground)); }
 .snake-beam { opacity: 0; transition: opacity 300ms ease; }
 .snake-option:not(:disabled):hover .snake-beam,
 .snake-option:focus-visible .snake-beam,
