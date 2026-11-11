@@ -273,4 +273,145 @@ export const quizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: "Debe cancelar la totalidad de la deuda y presentar una forma de pago electrónica excluyente (Caja de Ahorro, Cta Cte o Tarjeta). Sin esto no procede el cambio de plan y permanece en PMO."
   }
-];
+];,
+// --- LIQUIDACIÓN DE PRESTACIONES Y FARMACIA ---
+  {
+    id: 21,
+    category: "Liquidación y Coseguros",
+    question: "En la Pantalla de Antecedentes o Cuenta Corriente, al visualizar un coseguro, ¿qué significa que esté pintado de color verde?",
+    options: [
+      "Que el profesional tiene 90 días para facturarlo.",
+      "Que fue rechazado por la auditoría médica.",
+      "Que el coseguro ya fue cobrado.",
+      "Que el coseguro se generó pero todavía no fue cobrado (deuda a futuro)."
+    ],
+    correctAnswer: 2,
+    explanation: "El coseguro pintado de verde indica que ya fue cobrado. Si figura en color negro, significa que todavía no fue cobrado. Además, el profesional tiene 90 días para facturar la prestación desde la fecha de consumo."
+  },
+  {
+    id: 22,
+    category: "Farmacia",
+    question: "¿Cuál es el porcentaje de descuento en medicamentos para los planes PMI 2000 y PMI 3000?",
+    options: [
+      "40% de descuento.",
+      "50% de descuento.",
+      "60% de descuento.",
+      "100% de descuento."
+    ],
+    correctAnswer: 2,
+    explanation: "Según la cobertura de planes, el PMI y Monotributo tienen un 40% de descuento, mientras que el PMI 2000 y PMI 3000 cuentan con un 60% de descuento en medicamentos."
+  },
+
+  // --- REINTEGROS ---
+  {
+    id: 23,
+    category: "Gestión de Reintegros",
+    question: "¿Cuál es el plazo máximo de resolución para un trámite de Reintegros y qué validez temporal tiene la factura presentada?",
+    options: [
+      "15 días hábiles / validez de 3 meses.",
+      "30 días hábiles / validez de 6 meses prestacionales hacia atrás.",
+      "60 días corridos / validez de 1 año.",
+      "10 días hábiles / validez de 30 días."
+    ],
+    correctAnswer: 1,
+    explanation: "El sector Reintegros tiene un plazo máximo de 30 días hábiles para su resolución (con documentación correcta). La factura tiene validez de 6 meses hacia atrás desde la fecha de emisión."
+  },
+  {
+    id: 24,
+    category: "Reintegros - Ortodoncia",
+    question: "Para acceder al reintegro por Ortodoncia en los planes PMI 2000 y PMI 3000, ¿cómo se efectúa el pago del subsidio?",
+    options: [
+      "En 1 solo pago del 100% al presentar la primera factura.",
+      "Se descuenta directamente de la cuota mensual del socio.",
+      "En 4 pagos para PMI 2000 y en 5 pagos para PMI 3000, mediante la presentación paulatina de facturas cada 3 o 4 meses.",
+      "En 3 pagos fijos para todos los planes superiores."
+    ],
+    correctAnswer: 2,
+    explanation: "Se realiza por subsidio por única vez. El reintegro se ejecuta en 4 pagos para PMI 2000 y en 5 pagos para PMI 3000 a medida que el socio presenta las facturas subsecuentes (1era, 2da, 3era, etc.)."
+  },
+
+  // --- GAPYC Y CONVENIOS ---
+  {
+    id: 25,
+    category: "GAPyC - Cobro de Plus",
+    question: "Ante un reclamo por 'Cobro de Plus' donde el socio abonó el adicional (con o sin comprobante), ¿cómo se debe asentar en el sistema?",
+    options: [
+      "Se genera un reclamo cerrado - no válido.",
+      "Se genera un reclamo abierto, en el proceso D-D1 cobro de adicional.",
+      "Se genera un reclamo cerrado - válido y se reintegra automáticamente al 100%.",
+      "Se le indica al socio que es una determinación de gerencia y no se toma el reclamo."
+    ],
+    correctAnswer: 1,
+    explanation: "Cuando el socio abona el adicional (ya sea que le den o no comprobante), se debe generar un reclamo abierto en el proceso D-D1 (Cobro de adicional) pidiendo los datos obligatorios para elevarlo."
+  },
+
+  // --- TRANSPORTE Y CREDENCIALES ---
+  {
+    id: 26,
+    category: "Transporte - Plazos",
+    question: "¿Cuáles son los plazos de entrega estipulados para la correspondencia despachada a través de correos privados (OCA, Correo Argentino, etc.)?",
+    options: [
+      "24 hs para todo tipo de envío.",
+      "48 hs Prioritaria / 5 días hábiles Standard.",
+      "72 hs Pieza Prioritaria / 10 días hábiles Pieza Standard o Certificada.",
+      "15 días hábiles sin importar la prioridad."
+    ],
+    correctAnswer: 2,
+    explanation: "Las demoras de entrega por correo privado son: 72 hs para piezas prioritarias y 10 días hábiles para piezas standard o certificadas."
+  },
+  {
+    id: 27,
+    category: "Transporte - Credenciales",
+    question: "Si un socio reclama que no recibió su credencial y verificamos que fue enviada hace MÁS de 6 meses, ¿cómo se procede?",
+    options: [
+      "Se genera un reclamo abierto al sector Transporte.",
+      "Se le cobra la reposición de la credencial obligatoriamente.",
+      "Se le indica que la busque personalmente en la sucursal del correo.",
+      "Se genera un reclamo válido, finalizado e informado, y se envía un mail a transporte solicitando la reposición SIN COSTO."
+    ],
+    correctAnswer: 3,
+    explanation: "Si pasó más de 6 meses desde el envío, se genera un reclamo válido, finalizado e informado, y se pide vía mail la reposición de la credencial sin costo al socio."
+  },
+
+  // --- AYUDAS ECONÓMICAS Y TARJETA ---
+  {
+    id: 28,
+    category: "Ayudas Económicas",
+    question: "¿Qué condición es indispensable para que un socio pueda solicitar la RENOVACIÓN de una Ayuda Económica vigente?",
+    options: [
+      "Tener cancelado el 50% de las cuotas de la ayuda económica anterior.",
+      "Solicitarla exclusivamente de forma presencial en la caja de atención.",
+      "Presentar los 3 últimos recibos de sueldo y un garante titular.",
+      "Dar de baja previamente su Tarjeta Jerárquicos."
+    ],
+    correctAnswer: 0,
+    explanation: "Para renovar, el socio deberá tener cancelado al menos el 50% de las cuotas. La nueva ayuda debe ser de un monto superior a la anterior para poder cancelar el saldo pendiente."
+  },
+  {
+    id: 29,
+    category: "Tarjeta Jerárquicos",
+    question: "Si un socio consulta por el cálculo de intereses y financiación por una compra con la Tarjeta Jerárquicos, ¿dónde se lo debe direccionar?",
+    options: [
+      "Al correo electrónico de cuentas corrientes.",
+      "A la página web específica de Tarjeta Jerárquicos donde los intereses se actualizan automáticamente.",
+      "Al sector de Ayudas Económicas mediante un reclamo abierto.",
+      "Al comercio donde realizó la compra para que le devuelvan el interés."
+    ],
+    correctAnswer: 1,
+    explanation: "Se debe direccionar al socio a realizar la consulta en la página web (http://www.tarjetajerarquicos.com/...), ya que los intereses y la financiación se actualizan automáticamente allí."
+  },
+
+  // --- RECLAMOS ---
+  {
+    id: 30,
+    category: "Reclamos - Últimas Pautas",
+    question: "Si un socio se comunica por un reclamo que ya se encuentra 'Cerrado' pero el operador detecta que se cerró SIN contactar al socio, ¿cuál es el proceder correcto?",
+    options: [
+      "Ignorar la falta de contacto y simplemente leerle la resolución en pantalla.",
+      "Generar un reclamo nuevo abierto dirigido al mismo sector.",
+      "Brindar la información registrada y asentar sobre ese mismo reclamo una 'falla de gestión'.",
+      "Derivar la llamada inmediatamente al área de Legales."
+    ],
+    correctAnswer: 2,
+    explanation: "Las pautas indican que si se detecta un reclamo cerrado sin contactar al socio, se debe brindar la información registrada y asentar sobre el mismo reclamo como 'falla de gestión'."
+  }
