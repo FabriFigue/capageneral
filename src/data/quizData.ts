@@ -273,7 +273,7 @@ export const quizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: "Debe cancelar la totalidad de la deuda y presentar una forma de pago electrónica excluyente (Caja de Ahorro, Cta Cte o Tarjeta). Sin esto no procede el cambio de plan y permanece en PMO."
   }
-];,
+],
 // --- LIQUIDACIÓN DE PRESTACIONES Y FARMACIA ---
   {
     id: 21,
