@@ -414,3 +414,4 @@ export const quizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: "Las pautas indican que si se detecta un reclamo cerrado sin contactar al socio, se debe brindar la información registrada y asentar sobre el mismo reclamo como 'falla de gestión'."
   }
+];
